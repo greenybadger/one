@@ -8,6 +8,7 @@
 	<script language="javascript" type="text/javascript" src="js/flot/jquery.js"></script>
 	<script language="javascript" type="text/javascript" src="js/flot/jquery.flot.js"></script>
 	<script language="javascript" type="text/javascript" src="js/flot/jquery.flot.selection.js"></script>
+	<script language="javascript" type="text/javascript" src="js/flot/jquery.flot.time.js"></script>
 	<script type="text/javascript">
 
 	$(function() {
@@ -16,16 +17,23 @@
 
 		function getData(x1, x2) {
 
+		var time_offset = -373597200000;
+		var amplitude = 5;
+		var offset = 15;
+		var freq = 50;
+		//var time_stamp =  '1997-01-31 09:26:50.12';
+		
 			var d = [];
-			for (var i = 0; i <= 100; ++i) {
-				var x = x1 + i * (x2 - x1) / 100;
-				d.push([x, Math.sin(x * Math.sin(x))]);
+			for (var i = 0; i <= 100; i++) {
+				
+				d.push([time_offset + i * 1000, offset + (amplitude * Math.sin(i * 2 * 3.14 * freq)) ]);
 			}
-
+	
 			return [
-				{ label: "sin(x sin(x))", data: d }
+				{ label: "x", data: d }
 			];
 		}
+
 		
 
 
@@ -42,7 +50,14 @@
 				}
 			},
 			yaxis: {
-				ticks: 10
+				min: 0,
+			    max: 30,
+				ticks: 30 // ticks per y axis from min to max
+			},
+			xaxis: {
+					ticks: 10, // seconds
+					mode: "time",
+					minTickSize: [1, "second"],	
 			},
 			grid: {
 				hoverable: true
@@ -69,7 +84,7 @@
 				shadowSize: 0
 			},
 			xaxis: {
-				ticks: 4
+				ticks: 4	
 			},
 			yaxis: {
 				ticks: 3,
@@ -104,7 +119,10 @@
 
 			plot = $.plot("#placeholder", getData(ranges.xaxis.from, ranges.xaxis.to),
 				$.extend(true, {}, options, {
-					xaxis: { min: ranges.xaxis.from, max: ranges.xaxis.to },
+					xaxis: {
+					min: ranges.xaxis.from,
+					max: ranges.xaxis.to
+					},
 					yaxis: { min: ranges.yaxis.from, max: ranges.yaxis.to }
 				})
 			);
